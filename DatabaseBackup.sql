@@ -1,4 +1,6 @@
-﻿SET ANSI_NULLS ON
+USE SQLMaintenance
+GO
+SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -15,7 +17,7 @@ ALTER PROCEDURE [dbo].[DatabaseBackup]
 @Verify nvarchar(max) = 'N',
 @CleanupTime int = NULL,
 @CleanupMode nvarchar(max) = 'AFTER_BACKUP',
-@Compress nvarchar(max) = NULL,
+@Compress nvarchar(max) = (SELECT CASE WHEN Result = -1 THEN 'N' WHEN Result = 0 then 'Y' WHEN Result = 1 THEN 'Y' END FROM (SELECT CONVERT(INT,ISNULL((SELECT value FROM sys.configurations WHERE name = 'backup compression default'),-1)) Result ) A),
 @CopyOnly nvarchar(max) = 'N',
 @ChangeBackupType nvarchar(max) = 'N',
 @BackupSoftware nvarchar(max) = NULL,
